@@ -7,8 +7,8 @@
     "name": "Grigory Sapunov",
     "url": "https://github.com/che-shr-cat"
   },
-  "homepage": "https://github.com/che-shr-cat/short-context-agent",
-  "repository": "https://github.com/che-shr-cat/short-context-agent",
+  "homepage": "https://github.com/nnnet/short-context-agent",
+  "repository": "https://github.com/nnnet/short-context-agent",
   "license": "MIT",
   "keywords": ["context-compaction", "long-context", "agent-harness", "handoff-brief", "selective-reading"]
 }

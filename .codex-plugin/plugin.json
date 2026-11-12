@@ -1,0 +1,11 @@
+{
+  "name": "short-context-agent",
+  "version": "0.1.0",
+  "description": "Keep agentic work inside a short context window with handoff briefs and selective reading.",
+  "skills": "./skills/",
+  "hooks": "./.codex-plugin/hooks.json",
+  "interface": {
+    "category": "Productivity",
+    "displayName": "Short-Context Agent"
+  }
+}

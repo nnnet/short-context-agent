@@ -24,13 +24,19 @@ Two things the paper leaves implicit are made explicit here: the *resume* protoc
 
 ## Layout
 
-The repository is a Claude Code plugin that is also its own marketplace; the skill inside it is a plain [Agent Skill](https://agentskills.io) folder, so it also works anywhere a `SKILL.md` does.
+The repository is a Claude Code and Codex plugin that is also its own
+marketplace; the skill inside it is a plain
+[Agent Skill](https://agentskills.io) folder, so it also works anywhere a
+`SKILL.md` does.
 
 ```
 short-context-agent/
 ├── .claude-plugin/
 │   ├── plugin.json                  plugin manifest (name, version, metadata)
 │   └── marketplace.json             one-entry marketplace pointing at this repo (source "./")
+├── .codex-plugin/
+│   ├── plugin.json                  Codex manifest: skill path and hook path
+│   └── hooks.json                   Codex SessionStart hook definition
 ├── hooks/hooks.json                 SessionStart hook: re-inject the brief after /compact or /clear
 ├── skills/short-context-agent/      the skill
 │   ├── SKILL.md                     selective reading, handoff brief, resume protocol
@@ -50,34 +56,195 @@ short-context-agent/
 
 ## Install
 
-### Claude Code — plugin (recommended)
+Pick your agent: [Claude Code](#claude-code) · [Codex](#codex) · [Gemini CLI](#gemini-cli) · [Qwen Code](#qwen-code) · [Pi](#pi) · [OpenCode](#opencode) · [Copilot CLI](#copilot-cli) · [Kiro](#kiro) · [VS Code](#vs-code) · [ZCode](#zcode)
 
-Installs the skill *and* registers the `SessionStart` hook, so `.claude/handoff.md` is re-injected after every compaction or `/clear` without manual setup.
+Open its block and copy its install command. Every block also contains update,
+check and remove commands.
+
+There are two installation levels:
+
+- **Full plugin** — Claude Code and Codex install the skill plus the packaged
+  `SessionStart` hook that restores `.claude/handoff.md` after a context reset.
+- **Skill only** — the other agents install the portable `SKILL.md` bundle with
+  the third-party [`skills`](https://github.com/vercel-labs/skills) CLI. The
+  agent still writes and reads handoff briefs, but automatic hook injection is
+  unavailable.
+
+Full plugin installs require Python 3 for the hook. Skill-only installs require
+Node.js/npm for `npx` and Git for fetching the repository. Add `-p` instead of
+`-g` to the `skills` commands if you want a project-local installation.
+
+### Claude Code
 
 ```bash
-claude plugin marketplace add che-shr-cat/short-context-agent
+# install
+claude plugin marketplace add nnnet/short-context-agent
 claude plugin install short-context-agent@short-context-agent
+# update
+claude plugin update short-context-agent@short-context-agent
+# check
+claude plugin list
+# remove
+claude plugin uninstall short-context-agent@short-context-agent
+claude plugin marketplace remove short-context-agent
 ```
 
-Or in one line inside a session (Claude Code ≥ 2.1.275):
+Hooks ✓ (package) · Skills ✓
 
-```
-/plugin install short-context-agent --marketplace che-shr-cat/short-context-agent
-```
-
-Updates: `claude plugin update short-context-agent@short-context-agent`. To try it without installing: `git clone` and start Claude Code with `claude --plugin-dir ./short-context-agent`, or point `--plugin-url` at the plugin zip on the [Releases](https://github.com/che-shr-cat/short-context-agent/releases) page.
-
-### Any agent that reads SKILL.md
+### Codex
 
 ```bash
-npx skills add che-shr-cat/short-context-agent
+# install
+codex plugin marketplace add nnnet/short-context-agent --ref main
+codex plugin add short-context-agent@short-context-agent
+# one-time step: restart Codex, review the packaged hook and trust it
+# update
+codex plugin marketplace upgrade short-context-agent
+# check
+codex plugin list
+# remove
+codex plugin remove short-context-agent@short-context-agent
+codex plugin marketplace remove short-context-agent
 ```
 
-This installs the skill only (the [skills.sh](https://skills.sh) installer is a third-party tool that works across Claude Code, Codex, Cursor and others). Add the hook by hand afterwards if you use Claude Code — [`references/claude-code-setup.md`](skills/short-context-agent/references/claude-code-setup.md) has the settings snippet. Copying `skills/short-context-agent/` into `~/.claude/skills/` does the same.
+Hooks ✓ (package; explicit trust required) · Skills ✓
 
-### Claude apps
+Codex does not execute newly installed non-managed hooks until you review and
+trust their current definition. The packaged hook only runs
+`skills/short-context-agent/scripts/inject_brief.py`; without a fresh
+`.claude/handoff.md` it exits without output. The repository acceptance suite
+installs the plugin into an isolated Codex configuration, checks both packaged
+components, executes the hook against a handoff brief, and removes the plugin.
 
-Download `short-context-agent.skill` from the Releases page and add it as a custom skill where the app manages skills. The app has no hooks, so the agent's own checkpointing (SKILL.md §B) carries the state.
+### Gemini CLI
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a gemini-cli -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a gemini-cli
+# remove
+npx skills remove short-context-agent -g -a gemini-cli -y
+```
+
+Hooks — · Skills ✓
+
+### Qwen Code
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a qwen-code -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a qwen-code
+# remove
+npx skills remove short-context-agent -g -a qwen-code -y
+```
+
+Hooks — · Skills ✓
+
+### Pi
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a pi -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a pi
+# remove
+npx skills remove short-context-agent -g -a pi -y
+```
+
+Hooks — · Skills ✓
+
+### OpenCode
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a opencode -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a opencode
+# remove
+npx skills remove short-context-agent -g -a opencode -y
+```
+
+Hooks — · Skills ✓
+
+### Copilot CLI
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a github-copilot -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a github-copilot
+# remove
+npx skills remove short-context-agent -g -a github-copilot -y
+```
+
+Hooks — · Skills ✓
+
+### Kiro
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a kiro-cli -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a kiro-cli
+# remove
+npx skills remove short-context-agent -g -a kiro-cli -y
+```
+
+Hooks — · Skills ✓
+
+Kiro's default agent loads the skill automatically. A custom Kiro agent must
+include `skill://.kiro/skills/**/SKILL.md` in its `resources` array.
+
+### VS Code
+
+VS Code uses the GitHub Copilot skill location, so its lifecycle commands use
+the `github-copilot` agent target too.
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a github-copilot -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a github-copilot
+# remove
+npx skills remove short-context-agent -g -a github-copilot -y
+```
+
+Hooks — · Skills ✓
+
+### ZCode
+
+```bash
+# install
+npx skills add nnnet/short-context-agent --skill short-context-agent -g -a zcode -y
+# update
+npx skills update short-context-agent -g -y
+# check
+npx skills list -g -a zcode
+# remove
+npx skills remove short-context-agent -g -a zcode -y
+```
+
+Hooks — · Skills ✓
+
+Claude apps can instead download `short-context-agent.skill` from the
+[Releases](https://github.com/nnnet/short-context-agent/releases) page and add
+it as a custom skill. App-managed skills do not include hooks.
 
 ### Using it
 

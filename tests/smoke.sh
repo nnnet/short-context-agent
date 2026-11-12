@@ -16,9 +16,15 @@ root = sys.argv[1]
 p = json.load(open(f"{root}/.claude-plugin/plugin.json"))
 m = json.load(open(f"{root}/.claude-plugin/marketplace.json"))
 h = json.load(open(f"{root}/hooks/hooks.json"))
+c = json.load(open(f"{root}/.codex-plugin/plugin.json"))
+ch = json.load(open(f"{root}/.codex-plugin/hooks.json"))
 assert p["name"] == "short-context-agent", p["name"]
 assert any(e["name"] == p["name"] and e["source"] == "./" for e in m["plugins"]), "marketplace entry missing"
 assert "SessionStart" in h["hooks"], "SessionStart hook missing"
+assert c["name"] == p["name"], "Codex and Claude plugin names differ"
+assert c["skills"] == "./skills/", "Codex skill path missing"
+assert c["hooks"] == "./.codex-plugin/hooks.json", "Codex hook path missing"
+assert "SessionStart" in ch["hooks"], "Codex SessionStart hook missing"
 for group in h["hooks"]["SessionStart"]:
     for hook in group["hooks"]:
         for a in hook.get("args", []):
