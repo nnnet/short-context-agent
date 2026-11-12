@@ -24,6 +24,7 @@ trap 'rm -rf "$STATE"' EXIT
 codex_isolated() {
   bwrap \
     --bind / / \
+    --dev-bind /dev /dev \
     --bind "$CONFIG" "$CODEX_CONFIG" \
     -- "${CODEX_COMMAND[@]}" "$@"
 }
